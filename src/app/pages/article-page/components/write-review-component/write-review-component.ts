@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, Output, EventEmitter } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { RatingModule } from 'primeng/rating';
@@ -25,6 +25,8 @@ export class WriteReviewComponent {
   visible = signal(false);
   isSubmitting = false;
   private readonly reviewService = inject(ArticleService);
+  
+ @Output() reviewInserted = new EventEmitter<void>();
 
   review: Review = {
     username: '',
@@ -51,7 +53,9 @@ export class WriteReviewComponent {
           rating: 0,
           comment: '',
         }
+        this.reviewInserted.emit();
         this.hideDialog();
+        
       }),
       catchError(err => {
         // Case Error

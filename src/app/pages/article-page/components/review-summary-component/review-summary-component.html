@@ -1,0 +1,77 @@
+<h1 class="text-xl font-semibold mb-2">Customer Reviews</h1>
+<div class="flex items-center gap-2 mb-4">
+  <p-rating
+    [(ngModel)]="summary.avgRating"
+    [readonly]="true"
+    [stars]="5">
+</p-rating>
+
+<div class="space-y-2"></div>
+ <span class="text-sm text-gray-600">
+    {{ summary.avgRating }} based on {{ summary.totalReviews }} reviews
+  </span>
+</div>
+<div class="space-y-2">
+
+  <div class="flex items-center">
+    <p class="w-4 text-sm">5</p>
+    <p-progressBar
+      class="ml-2 w-full"
+      [value]="summary.percent5Star"
+      >
+    </p-progressBar>
+    <p class="ml-3 w-10 text-sm text-right">
+      {{ summary.percent5Star}}%
+    </p>
+  </div>
+
+  <div class="flex items-center">
+    <p class="w-4 text-sm">4</p>
+    <p-progressBar
+      class="ml-2 w-full"
+      [value]="summary.percent4Star"
+      >
+    </p-progressBar>
+    <p class="ml-3 w-10 text-sm text-right">
+      {{ summary.percent4Star}}%
+    </p>
+  </div>
+
+  <div class="flex items-center">
+    <p class="w-4 text-sm">3</p>
+    <p-progressBar
+      class="ml-2 w-full"
+      [value]="summary.percent3Star"
+      >
+    </p-progressBar>
+    <p class="ml-3 w-10 text-sm text-right">
+      {{ summary.percent3Star}}%
+    </p>
+  </div>
+
+  <div class="flex items-center">
+    <p class="w-4 text-sm">2</p>
+    <p-progressBar
+      class="ml-2 w-full"
+      [value]="summary.percent2Star"
+      >
+    </p-progressBar>
+    <p class="ml-3 w-10 text-sm text-right">
+      {{ summary.percent2Star}}%
+    </p>
+  </div>
+
+
+  <div class="flex items-center">
+    <p class="w-4 text-sm">1</p>
+    <p-progressBar
+      class="ml-2 w-full"
+      [value]="summary.percent1Star"
+      >
+    </p-progressBar>
+    <p class="ml-3 w-10 text-sm text-right">
+      {{ summary.percent1Star}}%
+    </p>
+  </div>
+
+</div>

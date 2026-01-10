@@ -24,4 +24,14 @@ export class ArticleService {
       headers: this.headers,
     });
   }
+
+    getReviews(): Observable<Review[]> {
+    return this.http.get<Review[]>(this.API_URL, {
+      headers: this.headers,
+      params: {
+        select: '*',
+        order: 'created_at.desc',
+      },
+    });
+  }
 }
