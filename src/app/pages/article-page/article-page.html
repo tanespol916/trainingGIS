@@ -1,2 +1,22 @@
-<p>article-page works!</p>
-<app-segmented-nav-component/>
+<div class="bg-white pt-6">
+    <app-segmented-nav-component />
+    <div
+        class="mx-auto mt-8 bg-white ring-1 ring-zinc-100 max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-x-8 lg:px-8 lg:py-32">
+        <div class="lg:col-span-4">
+            <app-write-review-component />
+        </div>
+
+        <div class="mt-16 lg:col-span-7 lg:col-start-6 lg:mt-0">
+            <div class="flow-root">
+                <div class="-my-12 divide-y divide-gray-200">
+                    <app-review-item-component
+                        [review]="{username:'Emily Selman', rating:5, comment:'This is the bag of my dreams. I took it on my last vacation and was able to fit an absurd amount of snacks for the many long and hungry flights.'}" />
+                    <app-review-item-component
+                        [review]="{username:'Emily Selman', rating:5, comment:'This is the bag of my dreams. I took it on my last vacation and was able to fit an absurd amount of snacks for the many long and hungry flights.'}" />
+                    <app-review-item-component
+                        [review]="{username:'Emily Selman', rating:5, comment:'This is the bag of my dreams. I took it on my last vacation and was able to fit an absurd amount of snacks for the many long and hungry flights.'}" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
