@@ -1,7 +1,20 @@
 <div class="flex h-screen">
     <aside
         class="w-75 flex flex-col shadow nav-sidebar min-w-75 bg-white static inset-y-0 left-0 z-40">
-        <div>Left Panel</div>
+        <div>
+            <p-accordion [value]="0">
+                <p-accordion-panel value="0">
+                     <p-accordion-header>Graphic Layer</p-accordion-header>
+                      <p-accordion-content>
+                        <div class="flex flex-row items-center space-x-5 justify-center">
+                        <p-button label="Clear" (click)="clearGraphicLayer()" variant="text" [raised]="true" />
+                        <p-button label="Add Demo" (click)="addGraphics()" [raised]="true" />
+                        </div>
+                        </p-accordion-content>
+                </p-accordion-panel>
+            </p-accordion>
+
+        </div>
     </aside>
 
     <main class="flex-1 bg-gray-100 flex flex-col transition-all duration-300">
@@ -12,7 +25,7 @@
         </header>
 
         <div class="flex-1">
-            <div #mapViewNode></div>
+            <div class="w-full h-full" #mapViewNode></div>
         </div>
     </main>
 </div>
