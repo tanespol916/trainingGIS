@@ -1,10 +1,9 @@
-import { Component , Input } from '@angular/core';
+import { Component , Input ,OnInit} from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
 import { RatingModule } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
 import { Review } from './types';
-
 @Component({
   selector: 'app-review-item-component',
   imports: [AvatarModule,AvatarGroupModule,RatingModule,FormsModule],
@@ -13,4 +12,5 @@ import { Review } from './types';
 })
 export class ReviewItemComponent {
   @Input({ required: true }) review!: Review;
+
 }

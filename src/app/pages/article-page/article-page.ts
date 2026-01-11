@@ -7,17 +7,19 @@ import { Review } from './components/review-item-component/types';
 import { CommonModule } from '@angular/common';
 import { ReviewSummaryComponent } from './components/review-summary-component/review-summary-component';
 import { ReviewSummary } from './components/review-summary-component/types';
+import { SkeletonModule } from 'primeng/skeleton';
+
 
 @Component({
   selector: 'app-article-page',
-  imports: [SegmentedNavComponent, ReviewItemComponent, WriteReviewComponent, CommonModule, ReviewSummaryComponent],
+  imports: [SegmentedNavComponent, ReviewItemComponent, WriteReviewComponent, CommonModule, ReviewSummaryComponent, SkeletonModule],
   templateUrl: './article-page.html',
   styleUrl: './article-page.css',
 })
 export class ArticlePage implements OnInit {
 
   reviews = signal<Review[]>([]);
-
+  loadingReviews = true;
 
   private readonly articleService = inject(ArticleService);
 
@@ -29,7 +31,7 @@ export class ArticlePage implements OnInit {
     this.articleService.getReviews().subscribe({
       next: (reviews) => {
         this.reviews.set(reviews);
-        console.log('Loaded reviews', reviews);
+        this.loadingReviews = false;
       },
       error: (err) => {
         console.log('Error loading reviews', err);
@@ -57,13 +59,13 @@ export class ArticlePage implements OnInit {
       };
     }
     let sum = 0;
-    const counts = [0, 0, 0, 0, 0, 0]; 
+    const counts = [0, 0, 0, 0, 0, 0];
 
     for (const r of list) {
       sum += r.rating;
       counts[r.rating] = counts[r.rating] + 1;
     }
-    
+
     return {
       avgRating: Number((sum / total).toFixed(1)),
       totalReviews: total,
@@ -75,4 +77,6 @@ export class ArticlePage implements OnInit {
     };
 
   });
+
+
 }
