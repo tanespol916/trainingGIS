@@ -1,64 +1,37 @@
 <div class="bg-white pt-6">
-  <app-segmented-nav-component />
-
-  <div
-    class="h-[calc(100vh-6rem)] mx-auto mt-8 bg-white ring-1 ring-zinc-100 max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-x-8 lg:px-8 lg:py-32">
-
-    <!-- LEFT -->
-    <div class="lg:col-span-4 gap-6">
-      <app-review-summary-component [summary]="reviewSummary()" />
-
-      <app-write-review-component
-        (reviewInserted)="onReviewInserted()">
-      </app-write-review-component>
-    </div>
-
-    <!-- RIGHT -->
-    <div class="mt-16 lg:col-span-7 lg:col-start-6 lg:mt-0 overflow-y-auto">
-      <div class="flow-root">
-        <div class="-my-12 divide-y divide-gray-200">
-
-          <!-- 🔹 SKELETON LOADING -->
-          <ng-container *ngIf="loadingReviews; else reviewList">
-            <div
-              class="py-12 max-w-md"
-              *ngFor="let i of [1,2,3,4,5]">
-
-              <div class="flex items-center">
-                <p-skeleton shape="circle" size="48px"></p-skeleton>
-
-                <div class="ml-4 w-full">
-                  <p-skeleton width="120px" height="14px"></p-skeleton>
-
-                  <div class="mt-2 flex gap-1">
-                    <p-skeleton
-                      *ngFor="let s of [1,2,3,4,5]"
-                      width="14px"
-                      height="14px">
-                    </p-skeleton>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mt-4 space-y-3">
-                <p-skeleton width="100%" height="12px"></p-skeleton>
-                <p-skeleton width="90%" height="12px"></p-skeleton>
-                <p-skeleton width="70%" height="12px"></p-skeleton>
-              </div>
-            </div>
-          </ng-container>
-
-          <!-- 🔹 REAL REVIEWS -->
-          <ng-template #reviewList>
-            <app-review-item-component
-              *ngFor="let review of reviews()"
-              [review]="review">
-            </app-review-item-component>
-          </ng-template>
-
+    <app-segmented-nav-component />
+    <div
+        class="mx-auto mt-8 bg-white ring-1 ring-zinc-100 max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-x-8 lg:px-8 lg:py-32">
+        <div class="lg:col-span-4">
+            <app-review-summary-component [summary]="summary()" />
+            <app-write-review-component (reviewSubmitted)="loadReviews()" />
         </div>
-      </div>
-    </div>
 
-  </div>
+        <div class="mt-16 lg:col-span-7 lg:col-start-6 lg:mt-0 max-h-150 overflow-y-auto pr-2">
+            <!-- 🔄 Skeleton loading -->
+            <ng-container *ngIf="isLoading(); else reviewList">
+                <div class="space-y-10">
+                    <div *ngFor="let _ of [1,2,3,4]">
+                        <div class="flex gap-4">
+                            <p-skeleton shape="circle" size="3rem"></p-skeleton>
+                            <div class="flex-1 space-y-3">
+                                <p-skeleton width="30%"></p-skeleton>
+                                <p-skeleton width="50%"></p-skeleton>
+                                <p-skeleton height="4rem"></p-skeleton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+            <!-- ✅ Review list -->
+            <ng-template #reviewList>
+                <div class="flow-root">
+                    <div class="-my-12 divide-y divide-gray-200">
+                        <app-review-item-component *ngFor="let item of reviews()" [review]="item" />
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
 </div>

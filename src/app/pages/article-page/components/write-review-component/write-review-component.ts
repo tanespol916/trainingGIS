@@ -1,4 +1,4 @@
-import { Component, signal, inject, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { RatingModule } from 'primeng/rating';
@@ -23,10 +23,10 @@ import { catchError, EMPTY, finalize, tap } from 'rxjs';
 })
 export class WriteReviewComponent {
   visible = signal(false);
+  @Output() reviewSubmitted = new EventEmitter<void>();
+
   isSubmitting = false;
-  private readonly reviewService = inject(ArticleService);
-  
- @Output() reviewInserted = new EventEmitter<void>();
+  private readonly articleService = inject(ArticleService);
 
   review: Review = {
     username: '',
@@ -44,8 +44,7 @@ export class WriteReviewComponent {
 
   submitReview() {
     this.isSubmitting = true;
-
-    this.reviewService.insertReview(this.review).pipe(
+    this.articleService.insertReview(this.review).pipe(
       tap(() => {
         // Case Success
         this.review = {
@@ -53,9 +52,10 @@ export class WriteReviewComponent {
           rating: 0,
           comment: '',
         }
-        this.reviewInserted.emit();
-        this.hideDialog();
         
+        // 🔥 emit event เมื่อ insert สำเร็จ
+        this.reviewSubmitted.emit();
+        this.hideDialog();
       }),
       catchError(err => {
         // Case Error
@@ -65,6 +65,4 @@ export class WriteReviewComponent {
       finalize(() => this.isSubmitting = false)
     ).subscribe();
   }
-
 }
-
