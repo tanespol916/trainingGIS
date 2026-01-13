@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import Map from '@arcgis/core/Map.js';
 import MapView from '@arcgis/core/views/MapView.js';
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer.js";
@@ -29,6 +30,14 @@ export class DemoGisPage implements OnInit, OnDestroy, AfterViewInit {
   mapView: MapView | null = null;
   csvLayer: CSVLayer | null = null;
   defaultCsvRenderer: any = null;
+
+  // Inject HttpClient
+  private http = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
+
+  // Hotel Listings - โหลดจาก local CSV
+  hotelListings: any[] = [];
+
   demoGraphicsLayer = new GraphicsLayer();
   demoVectorTileLayer = new VectorTileLayer({
     url: "https://tiles.arcgis.com/tiles/jSaRWj2TDlcN1zOC/arcgis/rest/services/Thailand_Transportation/VectorTileServer"
@@ -49,6 +58,79 @@ export class DemoGisPage implements OnInit, OnDestroy, AfterViewInit {
 
 
   ngOnInit(): void {
+    this.loadHotelsFromCSV();
+  }
+
+  /**
+   * โหลดข้อมูลโรงแรมจาก local CSV
+   */
+  loadHotelsFromCSV() {
+    this.http.get('/data/hotel_list.csv', { responseType: 'text' }).subscribe({
+      next: (data) => {
+        const lines = data.split('\n');
+        const headers = lines[0].split(',').map(h => h.trim());
+
+        this.hotelListings = lines.slice(1)
+          .filter(line => line.trim())
+          .map((line, index) => {
+            const values = this.parseCSVLine(line);
+
+            return {
+              id: index + 1,
+              latitude: parseFloat(values[headers.indexOf('latitude')] || '0'),
+              longitude: parseFloat(values[headers.indexOf('longitude')] || '0'),
+              address: values[headers.indexOf('address')] || '',
+              price: parseFloat(values[headers.indexOf('price')] || '0'),
+              name: values[headers.indexOf('hotel_name')] || '',
+              image: values[headers.indexOf('image')] || 'https://via.placeholder.com/400x300?text=No+Image'
+            };
+          });
+
+        console.log('Loaded hotels:', this.hotelListings.length);
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error loading CSV:', err);
+      }
+    });
+  }
+
+  /**
+   * Parse CSV line ที่อาจมี quotes
+   */
+  parseCSVLine(line: string): string[] {
+    const result: string[] = [];
+    let current = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        result.push(current.trim());
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    result.push(current.trim());
+    return result;
+  }
+
+  /**
+   * Click รายการโรงแรม -> zoom ไปที่ตำแหน่ง
+   */
+  onHotelClick(hotel: any) {
+    if (!this.mapView) return;
+
+    this.mapView.goTo({
+      center: [hotel.longitude, hotel.latitude],
+      zoom: 17
+    }, {
+      duration: 1000,
+      easing: 'ease-in-out'
+    });
   }
 
   ngAfterViewInit(): void {
