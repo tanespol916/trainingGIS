@@ -151,7 +151,7 @@ export class DemoGisPage implements OnInit, OnDestroy, AfterViewInit {
     this.mapView = new MapView({
       container,
       map: this.map,
-      center: [100.5018, 13.7563], // Bangkok city center (Siam)
+      center: [100.5241777251569, 13.75070327937915], // Bangkok city center (Siam)
       zoom: 15,
 
     });
