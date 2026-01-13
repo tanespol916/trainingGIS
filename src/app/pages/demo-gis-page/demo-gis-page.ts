@@ -11,6 +11,9 @@ import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer.js";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer.js";
 import CSVLayer from "@arcgis/core/layers/CSVLayer.js";
 import HeatmapRenderer from "@arcgis/core/renderers/HeatmapRenderer.js";
+import TextSymbol from '@arcgis/core/symbols/TextSymbol';
+import Point from "@arcgis/core/geometry/Point";
+
 
 @Component({
   selector: 'app-demo-gis-page',
@@ -50,6 +53,7 @@ export class DemoGisPage implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.initializeMap();
+    this.addPriceMarker();
   }
 
   async initializeMap(): Promise<any> {
@@ -74,9 +78,9 @@ export class DemoGisPage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   hideCsvLayer() {
-  if (!this.csvLayer) return;
-  this.csvLayer.visible = false;
-}
+    if (!this.csvLayer) return;
+    this.csvLayer.visible = false;
+  }
 
   resetAnalysis() {
     if (!this.csvLayer || !this.defaultCsvRenderer) return;
@@ -134,7 +138,7 @@ export class DemoGisPage implements OnInit, OnDestroy, AfterViewInit {
     `
       }
     });
-  
+
     this.map.add(this.csvLayer);
 
     this.mapView.goTo({
@@ -355,4 +359,51 @@ export class DemoGisPage implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  addPriceMarker() {
+    const point = new Point({
+      longitude: 100.61238932664604,
+      latitude: 14.073619468605445
+    });
+
+    const symbol = new TextSymbol({
+      text: `$900K`,
+      color: "black",
+      haloColor: "white",
+      haloSize: "2px",
+      font: {
+        size: 12,
+        weight: "bold"
+      },
+      backgroundColor: "white",
+      borderLineColor: "#ddd",
+      borderLineSize: 1,
+      yoffset: -10
+    });
+
+    const graphic = new Graphic({
+      geometry: point,
+      symbol,
+      attributes: {
+        name: "มหาวิทยาลัยธรรมศาสตร์ ศูนย์รังสิต",
+        image: "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwd49k6GoOfrdkidJoQedxNjkJKkVLXQJCQyQ187eyDibb2IFQw49Y5gCQVYvVVtACzIykU1rSQZbzWuIZwCT4KPE-Q-gDlBcu8qNlvNUlsOeqrXu3IJ3p6vi4_v6qnsl-_2F-8=w408-h350-k-no",
+        address: "99 หมู่ที่ 18 ถ. พหลโยธิน ต.คลองหนึ่ง อ.คลองหลวง ปทุมธานี 12120"
+      },
+      popupTemplate: {
+        title: "{name}",
+        content: `
+      <div class="w-64">
+        <img 
+          src="{image}" 
+          class="w-full h-40 object-cover rounded-lg mb-3"
+        />
+
+        <p class="text-sm text-gray-700">
+          {address}
+        </p>
+    `
+      }
+    });
+
+    this.demoGraphicsLayer.add(graphic);
+  }
 }
