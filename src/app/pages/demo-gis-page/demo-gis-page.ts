@@ -88,6 +88,9 @@ export class DemoGisPage implements OnInit, OnDestroy, AfterViewInit {
 
         console.log('Loaded hotels:', this.hotelListings.length);
         this.cdr.markForCheck();
+
+        // เพิ่มหมุดโรงแรมบนแผนที่
+        this.addHotelMarkers();
       },
       error: (err) => {
         console.error('Error loading CSV:', err);
@@ -204,23 +207,18 @@ export class DemoGisPage implements OnInit, OnDestroy, AfterViewInit {
   addCSV() {
     if (!this.map || !this.mapView) return;
 
-
     this.csvLayer = new CSVLayer({
-
-      url: '/data/hotel_list.csv', 
+      url: '/data/hotel_list.csv',
       latitudeField: 'latitude',
       longitudeField: 'longitude',
-
       popupTemplate: {
-        title: "Taxi ride",
+        title: "{hotel_name}",
         content: `
-      <b>Fare:</b> {fare_amount} USD<br/>
-      <b>Pickup Latitude:</b> {pickup_latitude}<br/>
-      <b>Pickup Longitude:</b> {pickup_longitude}
-    `
+          <b>Price:</b> {price} THB<br/>
+          <b>Address:</b> {address}
+        `
       }
     });
-
 
     this.csvLayer.renderer = {
       type: 'simple',
@@ -239,7 +237,7 @@ export class DemoGisPage implements OnInit, OnDestroy, AfterViewInit {
     this.csvLayer.labelingInfo = [
       {
         labelExpressionInfo: {
-          expression: "Text($feature.price) + 'Bath'"
+          expression: "Text($feature.price) + ' Bath'"
         },
         labelPlacement: 'above-center',
         symbol: {
@@ -247,20 +245,93 @@ export class DemoGisPage implements OnInit, OnDestroy, AfterViewInit {
           color: 'black',
           haloColor: 'white',
           haloSize: 1,
-          backgroundColor: 'white',
-          borderLineColor: '#ddd',
-          borderLineSize: 1,
           font: {
             size: 12,
             weight: 'bold'
-          },
-          {
-            duration: 1200,
-            easing: "ease-in-out"
           }
-        );
+        } as any
       }
+    ];
+
+    this.map.add(this.csvLayer);
+
+    this.mapView.goTo({
+      center: [100.526, 13.748],
+      zoom: 16
+    }, {
+      duration: 1200,
+      easing: "ease-in-out"
     });
+  }
+
+  /**
+   * สร้างหมุดโรงแรมบนแผนที่จากข้อมูล hotelListings
+   */
+  addHotelMarkers() {
+    if (!this.mapView || !this.map) return;
+
+    // ลบหมุดเก่าออกก่อน
+    this.demoGraphicsLayer.removeAll();
+
+    // สร้างหมุดสำหรับแต่ละโรงแรม
+    this.hotelListings.forEach(hotel => {
+      const point = new Point({
+        longitude: hotel.longitude,
+        latitude: hotel.latitude
+      });
+
+      // Symbol แบบ Text แสดงราคา
+      const priceSymbol = new TextSymbol({
+        text: `฿${hotel.price.toLocaleString()}`,
+        color: "white",
+        haloColor: "#6366F1",
+        haloSize: "2px",
+        font: {
+          size: 11,
+          weight: "bold"
+        },
+        backgroundColor: "#6366F1",
+        borderLineColor: "#4F46E5",
+        borderLineSize: 1,
+        yoffset: 0
+      });
+
+      const graphic = new Graphic({
+        geometry: point,
+        symbol: priceSymbol,
+        attributes: {
+          id: hotel.id,
+          name: hotel.name,
+          price: hotel.price,
+          address: hotel.address,
+          image: hotel.image
+        },
+        popupTemplate: {
+          title: "{name}",
+          content: `
+            <div style="width: 250px;">
+              <img src="{image}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;" />
+              <p style="font-size: 18px; font-weight: bold; color: #6366F1; margin: 5px 0;">฿{price}</p>
+              <p style="font-size: 13px; color: #666;">{address}</p>
+            </div>
+          `
+        }
+      });
+
+      this.demoGraphicsLayer.add(graphic);
+    });
+
+    // Zoom ไปที่พื้นที่โรงแรม (สยาม กรุงเทพฯ)
+    if (this.hotelListings.length > 0) {
+      const firstHotel = this.hotelListings[0];
+      this.mapView.goTo({
+        center: [firstHotel.longitude, firstHotel.latitude],
+        zoom: 16
+      }, {
+        duration: 1000,
+        easing: "ease-in-out"
+      });
+    }
   }
 
   addFeatureLayer() {
