@@ -256,7 +256,7 @@ export class DemoGisPage implements OnInit, OnDestroy, AfterViewInit {
     this.map.add(this.csvLayer);
 
     this.mapView.goTo({
-      center: [100.526, 13.748],
+      center: [100.49553188909185, 13.7552797457819],
       zoom: 16
     }, {
       duration: 1200,
@@ -373,7 +373,7 @@ export class DemoGisPage implements OnInit, OnDestroy, AfterViewInit {
   addGraphics() {
     // zoom to specific location
     this.mapView?.goTo({
-      center: [100.61238932664604, 14.073619468605445],
+      center: [100.49553188909185, 13.7552797457819],
       zoom: 20
     })
 
