@@ -3,48 +3,9 @@
     <div class="w-full h-full" #mapViewNode></div>
   </main>
 
-  <aside class="absolute right-0 top-0 h-full w-96 bg-white shadow z-50 flex flex-col">
-    <!-- Header -->
-    <div class="p-4 border-b border-gray-200">
-      <h2 class="text-xl font-bold text-gray-900">Listings in this Area</h2>
-      <p class="text-sm text-gray-500">{{ hotelListings.length }} results</p>
-    </div>
-
-    <!-- Listings -->
-    <div class="flex-1 overflow-y-auto p-4 space-y-4">
-      @for (hotel of hotelListings; track hotel.id) {
-      <div
-        class="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-200"
-        (click)="onHotelClick(hotel)">
-        <!-- Image -->
-        <div class="relative h-44 bg-gray-200">
-          <img [src]="hotel.image" [alt]="hotel.name" class="w-full h-full object-cover" />
-        </div>
-
-        <!-- Content -->
-        <div class="p-3">
-          <!-- Price -->
-          <p class="text-xl font-bold text-gray-900 mb-1">
-            {{ hotel.price | currency:'THB':'symbol':'1.0-0' }}
-          </p>
-
-          <!-- Name -->
-          <p class="text-sm font-medium text-gray-800 mb-2">
-            {{ hotel.name }}
-          </p>
-
-          <!-- Address -->
-          <div class="flex items-start gap-1">
-            <svg class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd"
-                d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                clip-rule="evenodd" />
-            </svg>
-            <p class="text-sm text-gray-500 line-clamp-2">{{ hotel.address }}</p>
-          </div>
-        </div>
-      </div>
-      }
-    </div>
+  <aside
+    class="absolute right-0 top-0 h-full w-75 bg-white shadow z-50"
+  >
+    
   </aside>
 </div>
