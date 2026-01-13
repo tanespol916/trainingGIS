@@ -60,7 +60,7 @@ export class DemoGisPage implements OnInit, AfterViewInit, OnDestroy {
   // =========================
   addCsvLayer() {
     this.csvLayer = new CSVLayer({
-      url: 'https://raw.githubusercontent.com/tanespol916/trainingGIS/refs/heads/develop/public/data/hotel_list.csv', // หรือ GitHub raw
+      url: '/data/hotel_list.csv', 
       latitudeField: 'latitude',
       longitudeField: 'longitude',
 
@@ -76,7 +76,7 @@ export class DemoGisPage implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    // 🔹 Pin Renderer
+
     this.csvLayer.renderer = {
       type: 'simple',
       symbol: {
