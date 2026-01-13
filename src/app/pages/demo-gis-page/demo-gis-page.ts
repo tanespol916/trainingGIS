@@ -206,10 +206,10 @@ export class DemoGisPage implements OnInit, OnDestroy, AfterViewInit {
 
 
     this.csvLayer = new CSVLayer({
-      url: "https://raw.githubusercontent.com/jeffprosise/Machine-Learning/refs/heads/master/Data/taxi-fares.csv",
 
-      latitudeField: "pickup_latitude",
-      longitudeField: "pickup_longitude",
+      url: '/data/hotel_list.csv', 
+      latitudeField: 'latitude',
+      longitudeField: 'longitude',
 
       popupTemplate: {
         title: "Taxi ride",
@@ -221,52 +221,38 @@ export class DemoGisPage implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
-    this.map.add(this.csvLayer);
 
-    this.mapView.goTo({
-      center: [-74.006, 40.7128],
-      zoom: 11
-    });
-  }
+    this.csvLayer.renderer = {
+      type: 'simple',
+      symbol: {
+        type: 'simple-marker',
+        color: '#6366F1',
+        size: 10,
+        outline: {
+          color: 'white',
+          width: 1
+        }
+      }
+    } as any;
 
-
-  zoomFeatureLayer() {
-    if (!this.map) return;
-    this.provinceFeatureLayer.queryFeatures({
-      where: "NAME1='กรุงเทพมหานคร'",  // SQL Statement
-      returnGeometry: true,
-      outFields: ["*"],
-      num: 1
-    }).then(result => {
-      console.log('result', result)
-      if (result.features.length > 0) {
-        const feature = result.features[0];
-        this.demoGraphicsLayer.removeAll();
-
-        // 🔹 สร้าง symbol สำหรับขอบเขตจังหวัด
-        const boundarySymbol: any = {
-          type: "simple-fill",
-          color: [0, 0, 0, 0], // โปร่งใส
-          outline: {
-            color: [0, 150, 255], // ฟ้า
-            width: 3
-          }
-        };
-
-        // 🔹 สร้าง graphic
-        const boundaryGraphic = new Graphic({
-          geometry: feature.geometry,
-          symbol: boundarySymbol
-        });
-
-        // 🔹 วาดขอบเขตจังหวัดลง graphic layer
-        this.demoGraphicsLayer.add(boundaryGraphic);
-
-        // 🔹 zoom ไปที่ polygon
-        this.mapView?.goTo(
-          {
-            target: feature.geometry,
-            padding: 40
+    // 🔹 Label ราคา
+    this.csvLayer.labelingInfo = [
+      {
+        labelExpressionInfo: {
+          expression: "Text($feature.price) + 'Bath'"
+        },
+        labelPlacement: 'above-center',
+        symbol: {
+          type: 'text',
+          color: 'black',
+          haloColor: 'white',
+          haloSize: 1,
+          backgroundColor: 'white',
+          borderLineColor: '#ddd',
+          borderLineSize: 1,
+          font: {
+            size: 12,
+            weight: 'bold'
           },
           {
             duration: 1200,
